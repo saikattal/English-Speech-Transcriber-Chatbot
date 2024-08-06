@@ -9,5 +9,7 @@ pipwin
 pyaudio
 numpy=1.24.4
 google-generativeai
-
+langchain
+langchain_community
+langchain-google-genai
 -e .

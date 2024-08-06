@@ -39,15 +39,31 @@ def transcribe_audio(audio_data):
 
 
 def main():
-    st.title("English Speech Transcriber Chatbot 🤖")
+    st.title("English Voice Enabled Chatbot 👾")
+
     
-    if st.button("Ask me anything"):
-        with st.spinner("Listening..."):
-            audio=voice_input()
-            text=transcribe_audio(audio)
-            response=llm_model_object(text)
-            
-            st.text_area(label="Response:",value=response,height=350)
+    if 'conversation' not in st.session_state:
+        st.session_state.conversation = []
+
+    st.subheader("Hi! I am your AI assistant chatbot!😎")
+
+    with st.form(key='voice_input_form'):
+        if st.form_submit_button("🎙️ Click to ask me anything!"):
+            with st.spinner("Listening..."):
+                audio = voice_input()
+                text = transcribe_audio(audio)
+                response = llm_model_object(text)
+
+                # Update conversation history
+                st.session_state.conversation.append({
+                    "user": text,
+                    "response": response
+                })
+
+    st.subheader("💬 Conversation History")
+    for entry in st.session_state.conversation:
+        st.markdown(f"**You:** {entry['user']}")
+        st.markdown(f"**Chatbot:** {entry['response']}")
            
 if __name__=='__main__':
     main()
