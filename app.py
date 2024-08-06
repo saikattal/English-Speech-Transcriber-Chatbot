@@ -6,6 +6,7 @@ import speech_recognition as sr
 from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 from io import BytesIO
 import os
+from src.helper import voice_input,llm_model_object
 
 HF_TOKEN=os.getenv("HF_TOKEN")
 # Constants
@@ -22,15 +23,6 @@ processor, model = load_model()
 
 # Function to capture and process audio
 
-def voice_input():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        with st.spinner("Listening..."):
-            audio = recognizer.listen(source)
-            st.write("Recording complete")
-            audio_data = BytesIO(audio.get_wav_data())
-            return audio_data
-
 # Function to process audio and generate text
 def transcribe_audio(audio_data):
     # Read the audio data from BytesIO stream
@@ -44,12 +36,18 @@ def transcribe_audio(audio_data):
     transcription = processor.batch_decode(predicted_ids)[0]
     return transcription
 
-st.title("Voice to Text using Wav2Vec2")
 
-if st.button("Record and Transcribe"):
-    audio_data = voice_input()
-    if audio_data:
-        transcription = transcribe_audio(audio_data)
-        st.write("Transcription:", transcription)
-    else:
-        st.write("No audio recorded.")
+
+def main():
+    st.title("English Speech Transcriber Chatbot 🤖")
+    
+    if st.button("Ask me anything"):
+        with st.spinner("Listening..."):
+            audio=voice_input()
+            text=transcribe_audio(audio)
+            response=llm_model_object(text)
+            
+            st.text_area(label="Response:",value=response,height=350)
+           
+if __name__=='__main__':
+    main()

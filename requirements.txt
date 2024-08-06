@@ -8,3 +8,6 @@ speechrecognition
 pipwin
 pyaudio
 numpy=1.24.4
+google-generativeai
+
+-e .
